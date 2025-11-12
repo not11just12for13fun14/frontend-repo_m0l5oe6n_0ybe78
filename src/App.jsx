@@ -15,7 +15,6 @@ function useDarkMode() {
       if (stored === 'light') document.documentElement.classList.remove('dark')
       setIsDark(stored === 'dark')
     }
-    // Smooth scrolling globally
     document.documentElement.classList.add('scroll-smooth')
   }, [])
 
@@ -40,11 +39,10 @@ const navItems = [
 
 function Navbar() {
   const { scrollY } = useScroll()
-  const bgOpacity = useTransform(scrollY, [0, 200], [0.0, 0.8])
+  const bgOpacity = useTransform(scrollY, [0, 120], [0, 1])
   const [open, setOpen] = useState(false)
   const { isDark, toggle } = useDarkMode()
 
-  // Close menu on hash change
   useEffect(() => {
     const onHash = () => setOpen(false)
     window.addEventListener('hashchange', onHash)
@@ -57,16 +55,10 @@ function Navbar() {
   }
 
   return (
-    <motion.nav
-      className="fixed top-0 inset-x-0 z-50"
-      style={{
-        backgroundColor: useMemo(() => (isDark ? 'rgba(17, 24, 39, 1)' : 'rgba(255, 255, 255, 1)'), [isDark]),
-      }}
-    >
+    <nav className="fixed top-0 inset-x-0 z-50">
       <motion.div
-        className="pointer-events-none absolute inset-0 backdrop-blur-xl"
         style={{ opacity: bgOpacity }}
-      />
+        className="absolute inset-0 bg-white/70 dark:bg-gray-900/60 backdrop-blur-md border-b border-white/60 dark:border-gray-800"/>
       <div className="relative mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
         <button onClick={() => goTo('home')} className="flex items-center gap-2 font-semibold text-lg tracking-tight text-gray-800 dark:text-gray-100">
           <Sparkles className="h-5 w-5 text-purple-500" />
@@ -74,7 +66,7 @@ function Navbar() {
         </button>
         <div className="hidden md:flex items-center gap-6">
           {navItems.map((n) => (
-            <a key={n.id} href={`#${n.id}`} className="text-sm text-gray-600 hover:text-purple-600 dark:text-gray-300 dark:hover:text-purple-300 transition-colors">
+            <a key={n.id} href={`#${n.id}`} className="text-sm text-gray-700 hover:text-purple-600 dark:text-gray-300 dark:hover:text-purple-300 transition-colors">
               {n.label}
             </a>
           ))}
@@ -104,7 +96,7 @@ function Navbar() {
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: 'auto', opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
-          className="md:hidden px-4 pb-4 space-y-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur"
+          className="md:hidden px-4 pb-4 space-y-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur"
         >
           {navItems.map((n) => (
             <a key={n.id} href={`#${n.id}`} className="block py-2 text-gray-700 dark:text-gray-200">
@@ -113,22 +105,22 @@ function Navbar() {
           ))}
         </motion.div>
       )}
-    </motion.nav>
+    </nav>
   )
 }
 
-function GradientBackdrop() {
+function SubtleBackdrop() {
   return (
-    <div className="absolute inset-0 -z-0 overflow-hidden">
+    <div className="pointer-events-none absolute inset-0 -z-10">
       <motion.div
-        className="pointer-events-none absolute -top-32 -left-24 h-96 w-96 rounded-full bg-gradient-to-br from-purple-300/50 via-blue-300/40 to-indigo-200/40 blur-3xl"
-        animate={{ x: [0, 40, -20, 0], y: [0, 20, -10, 0] }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute -top-32 -left-24 h-80 w-80 rounded-full bg-purple-300/25 blur-3xl"
+        animate={{ x: [0, 30, -10, 0], y: [0, 10, -10, 0] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="pointer-events-none absolute -bottom-24 -right-24 h-[28rem] w-[28rem] rounded-full bg-gradient-to-br from-indigo-300/40 via-purple-200/40 to-pink-200/40 blur-3xl"
-        animate={{ x: [0, -30, 10, 0], y: [0, -15, 25, 0] }}
-        transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-indigo-300/20 blur-3xl"
+        animate={{ x: [0, -20, 10, 0], y: [0, -10, 15, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
       />
     </div>
   )
@@ -136,37 +128,43 @@ function GradientBackdrop() {
 
 function Hero() {
   return (
-    <section id="home" className="relative min-h-[90vh] flex items-center justify-center pt-20">
+    <section id="home" className="relative min-h-[90vh] flex items-center pt-28">
+      {/* Spline background - cleaner, hidden on small for readability */}
       <div className="absolute inset-0">
-        <Spline scene="https://prod.spline.design/4cHQr84zOGAHOehh/scene.splinecode" style={{ width: '100%', height: '100%' }} />
+        <div className="h-full w-full hidden sm:block">
+          <Spline scene="https://prod.spline.design/4cHQr84zOGAHOehh/scene.splinecode" style={{ width: '100%', height: '100%' }} />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/40 to-white/0 dark:from-gray-950/80 dark:via-gray-950/60 dark:to-gray-900/20" />
       </div>
-      <GradientBackdrop />
-      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white"
-        >
-          ANDI SYARIFAH NURUL RIZKI
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.8 }}
-          className="mt-4 text-base sm:text-xl md:text-2xl text-gray-700/90 dark:text-gray-200 max-w-3xl mx-auto"
-        >
-          <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 bg-clip-text text-transparent">Psychology Student</span> at Universitas Persada Indonesia Y.A.I, Jakarta Pusat.
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-          className="mt-8 flex items-center justify-center gap-4"
-        >
-          <a href="#portfolio" className="rounded-full px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-lg shadow-purple-600/30 transition">View Work</a>
-          <a href="#contact" className="rounded-full px-6 py-3 bg-white/80 hover:bg-white text-purple-700 font-semibold border border-purple-200 backdrop-blur shadow-sm transition dark:bg-gray-900/60 dark:hover:bg-gray-900 dark:text-indigo-200 dark:border-indigo-800">Contact</a>
-        </motion.div>
+      <SubtleBackdrop />
+      <div className="relative z-10 max-w-6xl mx-auto px-6">
+        <div className="max-w-3xl">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white"
+          >
+            ANDI SYARIFAH NURUL RIZKI
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15, duration: 0.8 }}
+            className="mt-4 text-base sm:text-xl md:text-2xl text-gray-700/90 dark:text-gray-200"
+          >
+            <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 bg-clip-text text-transparent">Psychology Student</span> at Universitas Persada Indonesia Y.A.I, Jakarta Pusat.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="mt-8 flex items-center gap-4"
+          >
+            <a href="#portfolio" className="rounded-full px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-lg shadow-purple-600/30 transition">View Work</a>
+            <a href="#contact" className="rounded-full px-6 py-3 bg-white/80 hover:bg-white text-purple-700 font-semibold border border-purple-200 backdrop-blur shadow-sm transition dark:bg-gray-900/60 dark:hover:bg-gray-900 dark:text-indigo-200 dark:border-indigo-800">Contact</a>
+          </motion.div>
+        </div>
       </div>
     </section>
   )
@@ -174,16 +172,14 @@ function Hero() {
 
 function Section({ id, title, subtitle, children }) {
   return (
-    <section id={id} className="relative py-20">
-      <div className="absolute inset-0 pointer-events-none">
-        <GradientBackdrop />
-      </div>
+    <section id={id} className="relative py-16 sm:py-20">
+      <SubtleBackdrop />
       <div className="relative max-w-6xl mx-auto px-6">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
           className="mb-10 text-center"
         >
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">{title}</h2>
@@ -200,12 +196,12 @@ function Section({ id, title, subtitle, children }) {
 function About() {
   return (
     <Section id="about" title="About" subtitle="Curiosity-driven and people-centered">
-      <div className="grid md:grid-cols-2 gap-8 items-center">
+      <div className="grid md:grid-cols-2 gap-8 items-start">
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
+          initial={{ opacity: 0, x: -16 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
           className="rounded-2xl p-6 bg-white/70 dark:bg-gray-900/50 border border-purple-100/60 dark:border-indigo-900/40 shadow-sm backdrop-blur"
         >
           <p className="text-gray-700 dark:text-gray-200 leading-relaxed">
@@ -213,13 +209,13 @@ function About() {
           </p>
         </motion.div>
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
+          initial={{ opacity: 0, x: 16 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
           className="grid grid-cols-2 gap-4"
         >
-          {["Human Behavior", "Emotional Intelligence", "Mental Health", "Research Mindset"].map((t, i) => (
+          {["Human Behavior", "Emotional Intelligence", "Mental Health", "Research Mindset"].map((t) => (
             <motion.div
               key={t}
               whileHover={{ y: -4 }}
@@ -265,33 +261,29 @@ function Portfolio() {
         {portfolioItems.map((item, idx) => (
           <motion.div
             key={idx}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: idx * 0.05 }}
-            whileHover={{ y: -6 }}
+            transition={{ duration: 0.45, delay: idx * 0.05 }}
+            whileHover={{ y: -4 }}
             className="group relative rounded-2xl overflow-hidden border border-purple-100 dark:border-indigo-900 bg-white/70 dark:bg-gray-900/50 backdrop-blur shadow-sm"
           >
-            <div className="p-6">
+            <div className="p-6 min-h-[180px] flex flex-col">
               <div className="flex items-center gap-2 text-xs font-medium text-purple-700 dark:text-indigo-300 uppercase tracking-wide">
                 <FileText className="h-4 w-4" /> {item.tag}
               </div>
               <h3 className="mt-2 text-lg font-semibold text-gray-900 dark:text-gray-100">{item.title}</h3>
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{item.desc}</p>
+              <div className="mt-auto" />
             </div>
             <motion.div
               initial={{ opacity: 0 }}
               whileHover={{ opacity: 1 }}
               className="absolute inset-0 bg-gradient-to-br from-purple-500/0 via-purple-500/0 to-indigo-500/0 group-hover:from-purple-500/10 group-hover:via-indigo-500/10 group-hover:to-blue-500/10"
             />
-            <motion.div
-              initial={{ y: '100%' }}
-              whileHover={{ y: 0 }}
-              transition={{ type: 'spring', stiffness: 120, damping: 16 }}
-              className="absolute inset-x-0 bottom-0 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-t border-purple-100/60 dark:border-indigo-900/40"
-            >
-              <p className="text-xs text-gray-700 dark:text-gray-300">Hover reveal: deeper context and outcomes available upon request.</p>
-            </motion.div>
+            <div className="absolute inset-x-0 bottom-0 p-4 bg-white/85 dark:bg-gray-900/80 backdrop-blur border-t border-purple-100/60 dark:border-indigo-900/40">
+              <p className="text-xs text-gray-700 dark:text-gray-300">Hover to see more context and outcomes.</p>
+            </div>
           </motion.div>
         ))}
       </div>
@@ -301,14 +293,14 @@ function Portfolio() {
 
 function Skill({ label, value, icon }) {
   return (
-    <div className="rounded-xl p-4 bg-white/70 dark:bg-gray-900/50 border border-purple-100 dark:border-indigo-900 shadow-sm backdrop-blur">
+    <div className="rounded-xl p-5 bg-white/70 dark:bg-gray-900/50 border border-purple-100 dark:border-indigo-900 shadow-sm backdrop-blur">
       <div className="flex items-center gap-3">
         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-200 to-blue-200 dark:from-indigo-800/60 dark:to-indigo-700/40 flex items-center justify-center text-purple-700 dark:text-indigo-200">
           {icon}
         </div>
         <div className="font-semibold text-gray-800 dark:text-gray-100">{label}</div>
       </div>
-      <div className="mt-4 h-2 rounded-full bg-purple-100 dark:bg-indigo-950/60 overflow-hidden">
+      <div className="mt-4 h-2.5 rounded-full bg-purple-100 dark:bg-indigo-950/60 overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${value}%` }}
@@ -337,16 +329,16 @@ function Skills() {
 function Education() {
   return (
     <Section id="education" title="Education" subtitle="Foundation and growth at UPI Y.A.I">
-      <div className="grid md:grid-cols-2 gap-8 items-center">
+      <div className="grid md:grid-cols-2 gap-8 items-start">
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
+          initial={{ opacity: 0, x: -16 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
           className="flex items-center gap-4 rounded-2xl p-6 bg-white/70 dark:bg-gray-900/50 border border-purple-100/70 dark:border-indigo-900/40 shadow-sm backdrop-blur"
         >
           <motion.div
-            initial={{ scale: 0.8, rotate: -6, opacity: 0 }}
+            initial={{ scale: 0.9, rotate: -4, opacity: 0 }}
             whileInView={{ scale: 1, rotate: 0, opacity: 1 }}
             viewport={{ once: true }}
             transition={{ type: 'spring', stiffness: 120, damping: 12 }}
@@ -361,10 +353,10 @@ function Education() {
           </div>
         </motion.div>
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
+          initial={{ opacity: 0, x: 16 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
           className="rounded-2xl p-6 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-indigo-950/60 dark:to-indigo-900/30 border border-purple-100 dark:border-indigo-900"
         >
           <p className="text-gray-700 dark:text-gray-200">
@@ -381,10 +373,10 @@ function Contact() {
     <Section id="contact" title="Contact" subtitle="Let’s connect – friendly and professional">
       <div className="grid md:grid-cols-2 gap-8">
         <motion.form
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
           onSubmit={(e) => {
             e.preventDefault()
             const form = e.currentTarget
@@ -440,10 +432,10 @@ function Contact() {
         </motion.form>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          transition={{ duration: 0.5, delay: 0.05 }}
           className="rounded-2xl p-6 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-indigo-950/60 dark:to-indigo-900/30 border border-purple-100 dark:border-indigo-900"
         >
           <p className="text-gray-700 dark:text-gray-200">
@@ -469,7 +461,7 @@ function Contact() {
 function Footer() {
   return (
     <footer className="relative py-10">
-      <div className="absolute inset-0 pointer-events-none"><GradientBackdrop /></div>
+      <SubtleBackdrop />
       <div className="relative max-w-6xl mx-auto px-6 text-center text-sm text-gray-600 dark:text-gray-300">
         © {new Date().getFullYear()} ANDI SYARIFAH NURUL RIZKI · Built with care and curiosity.
       </div>
